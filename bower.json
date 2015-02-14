@@ -2,6 +2,11 @@
   "name": "arduinode",
   "private": true,
   "dependencies": {
-    "jquery": "~1.11.1"
+    "jquery": "~1.11.1",
+    "angular": "~1.3.13",
+    "highcharts": "~4.0.4",
+    "highcharts-ng": "~0.0.7",
+    "sio-client": "~1.3.3",
+    "angular-socket-io": "~0.7.0"
   }
 }
