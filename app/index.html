@@ -20,9 +20,16 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
+<div id="temp" ng-if="imu.temperature"><highchart id="chart1" config="tempChartConfig"></highchart></div>
 
-      <highchart id="chart1" config="chartConfig"></highchart>
-{{temperature}}
+    <div id="ra" ng-if="imu"><highchart id="chart2" config="chartc"></highchart></div>
+
+    <div style="clear:both;">
+<pre>{{imu.accelerometer | json}}</pre>
+      <pre>{{imu.gyro | json}}</pre>
+    </div>
+
+
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
@@ -35,6 +42,7 @@
     <script src="bower_components/sio-client/socket.io.js"></script>
     <script src="bower_components/angular-socket-io/socket.js"></script>
     <!-- endbower -->
+    <script src="bower_components/highcharts/themes/dark-unica.js"></script>
     <script src="bower_components/highcharts/modules/solid-gauge.js"></script>
     <!-- endbuild -->
 

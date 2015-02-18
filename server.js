@@ -1,9 +1,8 @@
 var express = require('express');
 var app = express();
-var io = require('socket.io')(app.listen(3000));
+var io = require('socket.io')(app.listen(8080));
 var five = require('johnny-five');
 
-var controller = process.argv[2] || "GP2Y0A02YK0F";
 
 
 app.use(express.static(__dirname + '/app'));
@@ -12,164 +11,151 @@ app.get("/", function (req, res) {
   res.sendfile("/index.html");
 });
 
+var controller = process.argv[2] || "GP2Y0A02YK0F";
 
-io.on('connection',function(){
-  five.Board().on("ready", function() {
-    var temperature = new five.Temperature({
-      controller: "LM35",
-      pin: "A0"
-    });
+var board = new five.Board();
 
-    temperature.on("data", function(err, data) {
-      io.emit('temperature',data.celsius);
-    });
+
+  board.on("ready", function () {
+
+    //
+    //
+    //var speed, commands, motors;
+    //
+    //speed = 100;
+    //commands = null;
+    //motors = {
+    //  a: new five.Motor([3, 12]),
+    //  b: new five.Motor([11, 13])
+    //};
+    //
+    //motors.a.fwd(2*speed);
+    //motors.b.fwd(2*speed);
+
+    //
+    //this.repl.inject({
+    //  motors: motors
+    //});
+    //
+    //function controller(ch, key) {
+    //  if (key) {
+    //    if (key.name === "space") {
+    //      motors.a.stop();
+    //      motors.b.stop();
+    //    }
+    //    if (key.name === "up") {
+    //      motors.a.rev(speed);
+    //      motors.b.fwd(speed);
+    //    }
+    //    if (key.name === "down") {
+    //      motors.a.fwd(speed);
+    //      motors.b.rev(speed);
+    //    }
+    //    if (key.name === "right") {
+    //      motors.a.fwd(speed * 0.75);
+    //      motors.b.fwd(speed * 0.75);
+    //    }
+    //    if (key.name === "left") {
+    //      motors.a.rev(speed * 0.75);
+    //      motors.b.rev(speed * 0.75);
+    //    }
+    //
+    //    commands = [].slice.call(arguments);
+    //  } else {
+    //    if (ch >= 1 && ch <= 9) {
+    //      speed = five.Fn.scale(ch, 1, 9, 0, 255);
+    //      controller.apply(null, commands);
+    //    }
+    //  }
+    //}
+    //
+    //
+    //keypress(process.stdin);
+    //
+    //process.stdin.on("keypress", controller);
+    //process.stdin.setRawMode(true);
+    //process.stdin.resume();
+
 
     var proximity = new five.IR.Proximity({
       controller: controller,
-      pin: "A0"
+      pin: "A1"
     });
 
 
-    proximity.on("data", function() {
-
-      io.emit('a',this.inches);
-      console.log("inches: ", this.inches);
-      console.log("cm: ", this.cm);
+    proximity.on("change", function () {
+      io.emit('prox',{'data': this.value});
+      console.log("inches: ", this.value);
     });
 
+    var imu = new five.IMU({
+      controller: "MPU6050"
+    });
 
+    var i=0;
+    var imuData={};
+    imu.on("change", function (d) {
+    i++;
 
-    //var acs = new five.Sensor({
-    //  pin: "A2",
-    //  controller:"ACS712",
-    //  freq: 1
-    //});
-    //
-    //acs.on('data',function(err,data){
-    //  if(data){
-    //    io.emit('current',data/1000);
-    //    console.log(data);
-    //  }
-    //})
+      if(i%15==0){
+        var date=new Date();
+        var imuData={
+          id:i,
+          'time':date,
+          'temperature':parseFloat(this.temperature.celsius.toFixed(2)),
+          'accelerometer':{
+            'x':this.accelerometer.x,
+            'y':this.accelerometer.y,
+            'z':this.accelerometer.z,
+            'pitch':this.accelerometer.pitch,
+            'roll':this.accelerometer.roll,
+            'acceleration':this.accelerometer.acceleration,
+            'inclination':this.accelerometer.inclination,
+            'orientation':this.accelerometer.orientation
+          },
+          'gyro':{
+            'x':this.gyro.x,
+            'y':this.gyro.y,
+            'z':this.gyro.z,
+            'pitch':this.gyro.pitch,
+            'roll':this.gyro.roll,
+            'yaw':this.gyro.yaw,
+            'rate':this.gyro.rate
+          }
+        }
+        console.log(i);
+        io.emit('temp', imuData);
+      }
+
+      //console.log("  celsius      : ", this.temperature.celsius);
+      //console.log("  fahrenheit   : ", this.temperature.fahrenheit);
+      //console.log("  kelvin       : ", this.temperature.kelvin);
+      //console.log("--------------------------------------");
+
+      //console.log("accelerometer");
+      //console.log("  x            : ", this.accelerometer.x);
+      //console.log("  y            : ", this.accelerometer.y);
+      //console.log("  z            : ", this.accelerometer.z);
+      //console.log("  pitch        : ", this.accelerometer.pitch);
+      //console.log("  roll         : ", this.accelerometer.roll);
+      //console.log("  acceleration : ", this.accelerometer.acceleration);
+      //console.log("  inclination  : ", this.accelerometer.inclination);
+      //console.log("  orientation  : ", this.accelerometer.orientation);
+      //console.log("--------------------------------------");
+
+      //console.log("gyro");
+      //console.log("  x            : ", this.gyro.x);
+      //console.log("  y            : ", this.gyro.y);
+      //console.log("  z            : ", this.gyro.z);
+      //console.log("  pitch        : ", this.gyro.pitch);
+      //console.log("  roll         : ", this.gyro.roll);
+      //console.log("  yaw          : ", this.gyro.yaw);
+      //console.log("  rate         : ", this.gyro.rate);
+      //console.log("  isCalibrated : ", this.gyro.isCalibrated);
+      //console.log("--------------------------------------");
+    });
 
   });
-});
 
-//
-//var scale = five.Fn.scale;
-//var board = new five.Board();
-//// Measured with multimeter @ 4.440V
-//var VCC = 4440;
-//
-//function toMV(value) {
-//  // Scale an ADC reading to milli-volts.
-//  return scale(value, 0, 1023, 0, VCC) | 0;
-//}
-//
-//function render(mA) {
-//  // mA means milli-amps
-//  var mAF = mA.toFixed(2);
-//
-//  mA = Number(mAF);
-//
-//  // Limit bar rendering to values that are unique from the
-//  // previous reading. This prevents an overwhelming number
-//  // of duplicate bars from being displayed.
-//  if (render.last !== mA) {
-//    console.log(
-//      mAF + ": " + "▇".repeat(scale(mA, 0.03, 2, 1, 50))
-//    );
-//  }
-//  render.last = mA;
-//}
-//
-//board.on("ready", function() {
-//  // Set up a 1kHz frequency sensor, with a name
-//  // that's similar to the type of sensor we're using.
-//  // This is a smart way to keep track of your physical
-//  // devices throughout the program.
-//  var acs = new five.Sensor({
-//    pin: "A0",
-//    freq: 1
-//  });
-//  var time = Date.now();
-//  var samples = 100;
-//  var accumulator = 0;
-//  var count = 0;
-//  var amps = 0;
-//  var qV = 0;
-//
-//  acs.on("data", function() {
-//    // ADC stands for Analog-to-Digital Converter
-//    // (https://en.wikipedia.org/wiki/Analog-to-digital_converter)
-//    // which reads the voltage returning to an analog pin from
-//    // a sensor circuit. The value is a 10-bit representation
-//    // (0-1023) of a voltage quantity from 0V-5V.
-//    var adc = 0;
-//    var currentAmps = 0;
-//
-//    // The "amps factor" or `aF` is calculated by dividing the
-//    // the voltage by the max ADC value to produce the
-//    // incremental value, which is ~0.0049V for each step
-//    // from 0-1023.
-//    // Use real VCC (from milli-volts)
-//    var aF = (VCC / 100) / 1023;
-//
-//
-//    // 1. Measure the the ACS712 reading with no load (0A);
-//    //    this is known as the quiescent output voltage,
-//    //    which is named `qV` in this program.
-//    if (!qV) {
-//      if (!count) {
-//        console.log("Calibrating...");
-//      }
-//      // Calibration phase takes measurements for ~5 seconds
-//      if (count < (samples * 40)) {
-//        count++;
-//        accumulator += this.value;
-//      } else {
-//        qV = Math.max(512, (accumulator / (samples * 40)) | 0);
-//        accumulator = count = 0;
-//
-//        console.log("qV: %d (%d) ", toMV(qV), qV);
-//        console.log("Elapsed: ", Date.now() - time);
-//      }
-//    } else {
-//
-//      if (count < samples) {
-//        // 2. Collect readings to calculate a current value
-//        count++;
-//        adc = this.value - qV;
-//        accumulator += adc * adc;
-//      } else {
-//        // 3. Update the running root mean square value
-//        currentAmps = Math.sqrt(accumulator / samples) * aF;
-//        accumulator = count = 0;
-//
-//        // ACS is fairly innaccurate below 0.03
-//        if (currentAmps < 0.03) {
-//          currentAmps = 0;
-//        }
-//      }
-//
-//      // If there is a currentAmps value:
-//      //    If there is an amps value:
-//      //      return average of currentAmps and amps
-//      //    Else:
-//      //      return currentAmps
-//      // Else:
-//      //    return amps
-//      amps = currentAmps ?
-//        (amps ? (currentAmps + amps) / 2 : currentAmps) :
-//        amps;
-//
-//      if (qV && amps) {
-//        render(amps);
-//      }
-//    }
-//  });
-//
-//
-//
-//});
+
 

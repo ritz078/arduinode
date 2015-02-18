@@ -1,8 +1,17 @@
-body {
-  background: #fafafa;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #333;
+html {
+  height: 100%;
+  width: 100%;
 }
+body {
+
+  height: 100%;
+  width: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #2d2d2f;
+  color:#fff;
+  overflow: hidden;
+}
+
 
 .hero-unit {
   margin: 50px auto 0 auto;
@@ -26,4 +35,19 @@ body {
   background: #ccc;
   color: #000;
   padding: 0.2em 0;
+}
+
+#temp{
+  width: 40%;
+  float: left;
+  overflow: auto;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+#ra{
+  width: 55%;
+  float: left;
+  padding: 20px;
 }
