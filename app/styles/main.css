@@ -1,17 +1,33 @@
+* {
+box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
 html {
+
   height: 100%;
   width: 100%;
+  font-family: 'Unica One', cursive;
+  background: -webkit-linear-gradient(90deg, #232526 10%, #414345 90%); /* Chrome 10+, Saf5.1+ */
+  background:    -moz-linear-gradient(90deg, #232526 10%, #414345 90%); /* FF3.6+ */
+  background:     -ms-linear-gradient(90deg, #232526 10%, #414345 90%); /* IE10 */
+  background:      -o-linear-gradient(90deg, #232526 10%, #414345 90%); /* Opera 11.10+ */
+  background:         linear-gradient(90deg, #232526 10%, #414345 90%); /* W3C */
+
 }
 body {
 
   height: 100%;
   width: 100%;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: #2d2d2f;
+
   color:#fff;
-  overflow: hidden;
+
 }
 
+.main{
+  padding-top: 50px;
+}
 
 .hero-unit {
   margin: 50px auto 0 auto;
@@ -37,17 +53,73 @@ body {
   padding: 0.2em 0;
 }
 
-#temp{
-  width: 40%;
+.temp{
+  width: 30%;
   float: left;
   overflow: auto;
+  font-size: 40px;
+  text-align: center;
 }
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
 
-#ra{
-  width: 55%;
+#ra,#ra1{
+  width: 45%;
   float: left;
   padding: 20px;
+  margin-bottom: 60px;
+}
+
+.data{
+  width: 23%;
+  float: left;
+  padding: 20px;
+  border-radius: 3px;
+  padding-top: 60px;
+}
+
+table{
+  width: 100%;
+  font-family: inherit;
+}
+
+td{
+  padding: 8px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.temp .a{
+  font-size: 100px;
+  display: block;
+  text-align: center;
+  margin-top: 90px;
+}
+
+header{
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  background-color: rgba(0,0,0,0.10);
+  font-family: 'Lato';
+  font-size: 30px;
+  position: fixed;
+  padding: 10px;
+}
+
+footer{
+  width: 100%;
+  clear:both;
+  font-family: 'Lato';
+  position: fixed;
+  bottom: 0;
+}
+
+footer span{
+  width: 33.3%;
+  float: left;
+  text-align: center;
+  padding: 10px;
+  background-color: rgba(0,0,0,0.18);
+
 }

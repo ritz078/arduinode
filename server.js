@@ -82,10 +82,41 @@ var board = new five.Board();
       pin: "A1"
     });
 
+    var proxDate=new Date();
+    var proxNo=1;
+    var proxState=true;
+  var abc=0;
+    var j=0;
 
-    proximity.on("change", function () {
-      io.emit('prox',{'data': this.value});
-      console.log("inches: ", this.value);
+    proximity.on("data", function () {
+j++;
+      if(this.value>500){
+        proxState=true;
+      }
+      if(this.value<200 && proxState){
+        proxNo++;
+        proxState=true;
+      }
+      var date=new Date();
+      var data={
+        'data':this.value,
+        'time':date
+      };
+      if((date-proxDate)>=5000 && proxNo>1){
+        data.speed=proxNo*12;
+        io.emit('prox',data);
+        abc=data;
+        proxDate=date;
+        proxNo=1;
+      }
+      else if((date-proxDate)>=5000 && proxNo==1){
+        data.speed=0;
+        io.emit('prox',data);
+      }
+
+
+
+
     });
 
     var imu = new five.IMU({
@@ -96,12 +127,13 @@ var board = new five.Board();
     var imuData={};
     imu.on("change", function (d) {
     i++;
-
-      if(i%15==0){
+this.a
+      if(i%25==0){
         var date=new Date();
         var imuData={
           id:i,
           'time':date,
+          'pins':this.accelerometer.pins,
           'temperature':parseFloat(this.temperature.celsius.toFixed(2)),
           'accelerometer':{
             'x':this.accelerometer.x,
@@ -123,7 +155,7 @@ var board = new five.Board();
             'rate':this.gyro.rate
           }
         }
-        console.log(i);
+        //console.log(i);
         io.emit('temp', imuData);
       }
 

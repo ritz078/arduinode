@@ -1,63 +1,160 @@
 <!doctype html>
 <html class="no-js" ng-app="arduinode" ng-controller="ArduinodeCtrl">
-  <head>
-    <meta charset="utf-8">
-    <title>arduinode</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(.) styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
-  </head>
-  <body ng-cloak class="ng-cloak">
-    <!--[if lt IE 10]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>arduinode</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-widtd">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- Place favicon.ico and apple-touch-icon.png in tde root directory -->
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css(.tmp) styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+</head>
+<body ng-cloak class="ng-cloak">
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+  your browser</a> to improve your experience.</p>
+<![endif]-->
 
-<div id="temp" ng-if="imu.temperature"><highchart id="chart1" config="tempChartConfig"></highchart></div>
+<header>
+  Data Acquisition System for Hybrid/Electric Cars
+</header>
+<div class="main">
+<div class="temp">
+  <highchart id="chart1" config="tempConfig" ng-if="imu"></highchart>
+</div>
 
-    <div id="ra" ng-if="imu"><highchart id="chart2" config="chartc"></highchart></div>
+<div id="ra" ng-if="imu">
+  <highchart id="chart2" config="chartc"></highchart>
+</div>
 
-    <div style="clear:both;">
-<pre>{{imu.accelerometer | json}}</pre>
-      <pre>{{imu.gyro | json}}</pre>
-    </div>
+<!--<div id="ra" ng-if="speedData"><highchart id="chart3" config="chartd"></highchart></div>-->
+<div class="data">
+  <table>
+    <!--<tr>-->
+      <!--<td>X</td>-->
+      <!--<td>{{imu.gyro.x}}</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+      <!--<td>Y</td>-->
+      <!--<td>{{imu.gyro.y}}</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+      <!--<td>Z</td>-->
+      <!--<td>{{imu.gyro.z}}</td>-->
+    <!--</tr>-->
+    <tr>
+      <td>Pitch angle</td>
+      <td>{{imu.gyro.pitch.angle*2 | number}} &deg;</td>
+    </tr>
+    <tr>
+      <td>Roll angle</td>
+      <td>{{imu.gyro.roll.angle*2|number}} &deg;</td>
+    </tr>
+    <tr>
+      <td>Yaw angle</td>
+      <td>{{imu.gyro.yaw.angle*2|number}} &deg;</td>
+    </tr>
+    <tr>
+      <td>Pitch Rate</td>
+      <td>{{imu.gyro.pitch.rate|number}} &deg;/s</td>
+    </tr>
+    <tr>
+      <td>Roll Rate</td>
+      <td>{{imu.gyro.roll.rate|number}} &deg;/s</td>
+    </tr>
+    <tr>
+      <td>Yaw Rate</td>
+      <td>{{imu.gyro.yaw.rate|number}} &deg;/s</td>
+    </tr>
+  </table>
+</div>
+<div class="temp">
+  <highchart id="chart5" config="speedConfig"></highchart>
+</div>
+
+<div id="ra1" ng-if="imu">
+  <highchart id="chart2" config="accelerometerConfig"></highchart>
+</div>
+<div class="data">
+  <table>
+
+    <tr>
+      <td>X</td>
+      <td>{{imu.accelerometer.x * 9.80665 |number}} m/s<sup>2</sup></td>
+    </tr>
+    <tr>
+      <td>Y</td>
+      <td>{{(imu.accelerometer.y +0.05)*9.80665 | number}} m/s<sup>2</sup></td>
+    </tr>
+    <tr>
+      <td>Z</td>
+      <td>{{(imu.accelerometer.z +0.205)*9.80665 | number}} m/s<sup>2</sup></td>
+    </tr>
+    <!--<tr>-->
+      <!--<td>Pitch</td>-->
+      <!--<td>{{imu.accelerometer.pitch}} &deg;</td>-->
+    <!--</tr>-->
+    <tr>
+      <td>Acceleration</td>
+      <td>{{imu.accelerometer.acceleration*9.80665 | number}} m/s<sup>2</sup></td>
+    </tr>
+    <!--<tr>-->
+      <!--<td>Roll</td>-->
+      <!--<td>{{imu.accelerometer.roll}} &deg;</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+      <!--<td>Inclination</td>-->
+      <!--<td>{{imu.accelerometer.inclination | number}} &deg;</td>-->
+    <!--</tr>-->
+  </table>
+</div>
+</div>
+<footer>
+  <span>Pranav Sharma</span><span>Rupal Saraswat</span><span>Ritesh Kumar</span>
+</footer>
 
 
+<!-- build:js(.) scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="bower_components/highcharts/modules/exporting.js"></script>
+<script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
+<script src="bower_components/sio-client/socket.io.js"></script>
+<script src="bower_components/angular-socket-io/socket.js"></script>
+<!-- endbower -->
+<script src="bower_components/highcharts/themes/dark-unica.js"></script>
+<script src="bower_components/highcharts/modules/solid-gauge.js"></script>
+<!-- endbuild -->
 
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/highcharts/highcharts.js"></script>
-    <script src="bower_components/highcharts/highcharts-more.js"></script>
-    <script src="bower_components/highcharts/modules/exporting.js"></script>
-    <script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
-    <script src="bower_components/sio-client/socket.io.js"></script>
-    <script src="bower_components/angular-socket-io/socket.js"></script>
-    <!-- endbower -->
-    <script src="bower_components/highcharts/themes/dark-unica.js"></script>
-    <script src="bower_components/highcharts/modules/solid-gauge.js"></script>
-    <!-- endbuild -->
+<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<script>
+  (function (b, o, i, l, e, r) {
+    b.GoogleAnalyticsObject = l;
+    b[l] || (b[l] =
+      function () {
+        (b[l].q = b[l].q || []).push(arguments)
+      });
+    b[l].l = +new Date;
+    e = o.createElement(i);
+    r = o.getElementsByTagName(i)[0];
+    e.src = '//www.google-analytics.com/analytics.js';
+    r.parentNode.insertBefore(e, r)
+  }(window, document, 'script', 'ga'));
+  ga('create', 'UA-XXXXX-X');
+  ga('send', 'pageview');
+</script>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <script>
-      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-      e.src='//www.google-analytics.com/analytics.js';
-      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-      ga('create','UA-XXXXX-X');ga('send','pageview');
-    </script>
-
-        <!-- build:js({app,.tmp}) scripts/main.js -->
-        <script src="scripts/main.js"></script>
-        <!-- endbuild -->
+<!-- build:js({app,.tmp}) scripts/main.js -->
+<script src="scripts/main.js"></script>
+<!-- endbuild -->
 </body>
 </html>
