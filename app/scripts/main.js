@@ -277,7 +277,6 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
 
 
   function speedC(s){
-    alert('a');
   $scope.speedConfig={
     "options": {
       chart: {
