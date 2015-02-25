@@ -31,7 +31,6 @@
   "dependencies": {
     "express": "^4.11.2",
     "johnny-five": "^0.8.43",
-    "keypress": "^0.2.1",
     "socket.io": "^1.3.3"
   }
 }
