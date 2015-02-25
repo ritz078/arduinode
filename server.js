@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var app = express();
 var io = require('socket.io')(app.listen(8080));
@@ -7,89 +9,26 @@ var five = require('johnny-five');
 
 app.use(express.static(__dirname + '/app'));
 
-app.get("/", function (req, res) {
-  res.sendfile("/index.html");
+app.get('/', function (res) {
+  res.sendfile('/index.html');
 });
 
-var controller = process.argv[2] || "GP2Y0A02YK0F";
+var controller = process.argv[2] || 'GP2Y0A02YK0F';
 
 var board = new five.Board();
 
 
-  board.on("ready", function () {
-
-    //
-    //
-    //var speed, commands, motors;
-    //
-    //speed = 100;
-    //commands = null;
-    //motors = {
-    //  a: new five.Motor([3, 12]),
-    //  b: new five.Motor([11, 13])
-    //};
-    //
-    //motors.a.fwd(2*speed);
-    //motors.b.fwd(2*speed);
-
-    //
-    //this.repl.inject({
-    //  motors: motors
-    //});
-    //
-    //function controller(ch, key) {
-    //  if (key) {
-    //    if (key.name === "space") {
-    //      motors.a.stop();
-    //      motors.b.stop();
-    //    }
-    //    if (key.name === "up") {
-    //      motors.a.rev(speed);
-    //      motors.b.fwd(speed);
-    //    }
-    //    if (key.name === "down") {
-    //      motors.a.fwd(speed);
-    //      motors.b.rev(speed);
-    //    }
-    //    if (key.name === "right") {
-    //      motors.a.fwd(speed * 0.75);
-    //      motors.b.fwd(speed * 0.75);
-    //    }
-    //    if (key.name === "left") {
-    //      motors.a.rev(speed * 0.75);
-    //      motors.b.rev(speed * 0.75);
-    //    }
-    //
-    //    commands = [].slice.call(arguments);
-    //  } else {
-    //    if (ch >= 1 && ch <= 9) {
-    //      speed = five.Fn.scale(ch, 1, 9, 0, 255);
-    //      controller.apply(null, commands);
-    //    }
-    //  }
-    //}
-    //
-    //
-    //keypress(process.stdin);
-    //
-    //process.stdin.on("keypress", controller);
-    //process.stdin.setRawMode(true);
-    //process.stdin.resume();
-
-
-    var proximity = new five.IR.Proximity({
+  board.on('ready', function () {
+     var proximity = new five.IR.Proximity({
       controller: controller,
-      pin: "A1"
+      pin: 'A1'
     });
 
     var proxDate=new Date();
     var proxNo=1;
     var proxState=true;
-  var abc=0;
-    var j=0;
 
-    proximity.on("data", function () {
-j++;
+    proximity.on('data', function () {
       if(this.value>500){
         proxState=true;
       }
@@ -105,35 +44,26 @@ j++;
       if((date-proxDate)>=5000 && proxNo>1){
         data.speed=proxNo*12;
         io.emit('prox',data);
-        abc=data;
         proxDate=date;
         proxNo=1;
       }
-      else if((date-proxDate)>=5000 && proxNo==1){
+      else if((date-proxDate)>=5000 && proxNo===1){
         data.speed=0;
         io.emit('prox',data);
       }
-
-
-
-
     });
 
     var imu = new five.IMU({
-      controller: "MPU6050"
+      controller: 'MPU6050'
     });
 
     var i=0;
-    var imuData={};
-    imu.on("change", function (d) {
+    imu.on('change', function () {
     i++;
-this.a
-      if(i%25==0){
+      if(i%25===0){
         var date=new Date();
         var imuData={
-          id:i,
           'time':date,
-          'pins':this.accelerometer.pins,
           'temperature':parseFloat(this.temperature.celsius.toFixed(2)),
           'accelerometer':{
             'x':this.accelerometer.x,
@@ -154,8 +84,7 @@ this.a
             'yaw':this.gyro.yaw,
             'rate':this.gyro.rate
           }
-        }
-        //console.log(i);
+        };
         io.emit('temp', imuData);
       }
 
