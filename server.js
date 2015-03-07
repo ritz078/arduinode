@@ -60,7 +60,7 @@ var board = new five.Board();
     var i=0;
     imu.on('change', function () {
     i++;
-      if(i%25===0){
+      if(i%30===0){
         var date=new Date();
         var imuData={
           'time':date,
