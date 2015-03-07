@@ -407,20 +407,19 @@ var oldSpeed=0;
 }]);
 
 
-app
-  .directive(
+app.directive(
   "tjsModelViewer",
-  [function () {
+  ['$timeout',function ($timeout) {
     return {
       restrict: "E",
       scope: {
-        assimpUrl: "=assimpUrl"
+        assimpUrl: "=assimpUrl",
+        assimpData:"=assimpData"
       },
       link: function (scope, elem, attr) {
         var camera;
         var scene;
         var renderer;
-        var previous;
 
         // init scene
         init();
@@ -428,31 +427,29 @@ app
         // Load jeep model using the AssimpJSONLoader
         var loader1 = new THREE.AssimpJSONLoader();
 
-        scope.$watch("assimpUrl", function(newValue, oldValue) {
-          if (newValue != oldValue) loadModel(newValue);
-        });
-
         function loadModel(modelUrl) {
           loader1.load(modelUrl, function (assimpjson) {
             assimpjson.scale.x = assimpjson.scale.y = assimpjson.scale.z = 0.2;
             assimpjson.updateMatrix();
-            if (previous) scene.remove(previous);
             scene.add(assimpjson);
-
-            previous = assimpjson;
+            assimpjson.name="model";
+            console.log(scene.getObjectByName('model'))
           });
         }
+
+
+
 
         loadModel(scope.assimpUrl);
         animate();
 
         function init() {
           camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 2000);
-          camera.position.set(2, 4, 5);
+          camera.position.set(0, 0, 0);
           scene = new THREE.Scene();
-          scene.fog = new THREE.FogExp2(0x000000, 0.035);
+          scene.position.set(0,0,0);
+          scene.rotation.set(1,0,0);
           // Lights
-          scene.add(new THREE.AmbientLight(0xcccccc));
           var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0xeeeeee);
           directionalLight.position.x = Math.random() - 0.5;
           directionalLight.position.y = Math.random() - 0.5;
@@ -466,30 +463,41 @@ app
           elem[0].appendChild(renderer.domElement);
 
           // Events
-          window.addEventListener('resize', onWindowResize, false);
+          //window.addEventListener('resize', onWindowResize, false);
         }
 
-        //
-        function onWindowResize(event) {
-          renderer.setSize(window.innerWidth, window.innerHeight);
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
+        ////
+        //function onWindowResize(event) {
+        //  renderer.setSize(window.innerWidth, window.innerHeight);
+        //  camera.aspect = window.innerWidth / window.innerHeight;
+        //  camera.updateProjectionMatrix();
+        //}
+
+        function r(a,b){
+          a.rotation.x=(b.yaw.angle*2) * Math.PI/180;
+          a.rotation.y=(b.roll.angle*2)*Math.PI/180;
+         a.rotation.z=(b.pitch.angle*2)*Math.PI/180;
         }
 
-        //
-        var t = 0;
 
         function animate() {
           requestAnimationFrame(animate);
           render();
         }
 
-        //
+        scope.$watch('assimpData',function(n){
+         var obj= scene.getObjectByName('model');
+          if(obj!=undefined){
+            r(obj,n);
+          }
+
+        });
+
+
         function render() {
-          var timer = Date.now() * 0.0005;
-          camera.position.x = Math.cos(timer) * 10;
-          camera.position.y = 4;
-          camera.position.z = Math.sin(timer) * 10;
+          camera.position.x = 4;//0;
+          camera.position.y = 8;//(Math.sin( t/1000) * 300 );
+          camera.position.z = 4//(Math.sin( t/1000) * 300 );
           camera.lookAt(scene.position);
           renderer.render(scene, camera);
         }

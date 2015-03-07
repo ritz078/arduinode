@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>arduinode</title>
   <meta name="description" content="">
-  <meta name="viewport" content="width=device-widtd">
+  <meta name="viewport" content="width=device-width">
   <link rel="shortcut icon" href="/favicon.ico">
   <!-- Place favicon.ico and apple-touch-icon.png in tde root directory -->
   <!-- build:css(.) styles/vendor.css -->
@@ -23,6 +23,7 @@
 
 <header>
   Data Acquisition System for Hybrid/Electric Cars
+  <input type="range" min="-90" max="90" ng-model="data"/>
 </header>
 <div class="main" ng-if="true">
 <div class="temp">
@@ -92,7 +93,9 @@
 </div>
 </div>
 
-<tjs-model-viewer assimp-url="assimpModelUrl"></tjs-model-viewer>
+
+
+<tjs-model-viewer assimp-url="assimpModelUrl" assimp-data="imu.gyro"></tjs-model-viewer>
 
 <footer>
   <span>Pranav Sharma</span><span>Rupal Saraswat</span><span>Ritesh Kumar</span>
