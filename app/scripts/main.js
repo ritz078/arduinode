@@ -426,7 +426,7 @@ app.directive(
 
         function loadModel(modelUrl) {
           loader1.load(modelUrl, function (assimpjson) {
-            assimpjson.scale.x = assimpjson.scale.y = assimpjson.scale.z = 0.2;
+            assimpjson.scale.x = assimpjson.scale.y = assimpjson.scale.z = 0.3;
             assimpjson.updateMatrix();
             scene.add(assimpjson);
             assimpjson.name = "model";
@@ -488,8 +488,8 @@ app.directive(
 
         function render() {
           camera.position.x = 4;//0;
-          camera.position.y = 8;//(Math.sin( t/1000) * 300 );
-          camera.position.z = 4//(Math.sin( t/1000) * 300 );
+          camera.position.y = 4;//(Math.sin( t/1000) * 300 );
+          camera.position.z = 4;//(Math.sin( t/1000) * 300 );
           camera.lookAt(scene.position);
           renderer.render(scene, camera);
         }
