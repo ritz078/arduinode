@@ -4,11 +4,23 @@ var app = angular.module('arduinode', ['btford.socket-io', 'highcharts-ng']);
 
 app.factory('mySocket', function (socketFactory) {
   var mySocket = socketFactory();
-  mySocket.forward('error');
   return mySocket;
 });
 
 app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocket) {
+
+  $scope.stopCar = function () {
+    mySocket.emit('stop car','stopCar');
+    console.log('gfggf');
+  };
+
+  $scope.startCar= function () {
+    mySocket.emit('start car','start');
+  };
+
+  mySocket.on('started', function (d) {
+    console.log(d);
+  });
 
   $scope.assimpModelUrl = "/model/model.json";
   var lineData = {
@@ -21,7 +33,7 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
     'x': [],
     'y': [],
     'z': []
-  }
+  };
 
   Array.prototype.initializeArray = function (d) {
     while (d--) {
@@ -126,7 +138,7 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
 
       //The below properties are watched separately for changes.
       //Series object (optional) - a list of series using normal highcharts series options.
-      series : [{
+      series: [{
         'name'    : '',
         data      : [d.temperature],
         dataLabels: {
@@ -135,7 +147,7 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
           '<span style="font-size:12px;color:silver">&deg; C</span></div>'
         }
       }],
-      yAxis  : {
+      yAxis : {
         min  : 10,
         max  : 50,
         title: {

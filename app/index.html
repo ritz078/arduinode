@@ -23,8 +23,11 @@
 
 <header>
   Data Acquisition System for Hybrid/Electric Cars
+  <button ng-click="stopCar()">Stop</button>
+  <button ng-click="startCar()">start</button>
 </header>
 <div class="main" ng-if="true">
+
 <div class="temp">
   <highchart id="chart1" config="tempConfig" ng-if="imu"></highchart>
 </div>
@@ -107,6 +110,7 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/highcharts/highcharts.js"></script>
 <script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="bower_components/highcharts/modules/exporting.js"></script>
 <script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
 <script src="bower_components/sio-client/socket.io.js"></script>
 <script src="bower_components/angular-socket-io/socket.js"></script>
