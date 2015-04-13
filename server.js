@@ -21,39 +21,6 @@ var board = new five.Board({
 
 
   board.on('ready', function () {
-     var proximity = new five.IR.Proximity({
-      controller: controller,
-      pin: 'A1'
-    });
-
-    var proxDate=new Date();
-    var proxNo=1;
-    var proxState=true;
-
-    proximity.on('data', function () {
-      if(this.value>500){
-        proxState=true;
-      }
-      if(this.value<200 && proxState){
-        proxNo++;
-        proxState=true;
-      }
-      var date=new Date();
-      var data={
-        'data':this.value,
-        'time':date
-      };
-      if((date-proxDate)>=5000 && proxNo>1){
-        data.speed=proxNo*12;
-        io.emit('prox',data);
-        proxDate=date;
-        proxNo=1;
-      }
-      else if((date-proxDate)>=5000 && proxNo===1){
-        data.speed=0;
-        io.emit('prox',data);
-      }
-    });
 
     var imu = new five.IMU({
       controller: 'MPU6050'
@@ -95,31 +62,36 @@ var board = new five.Board({
 
 
     var speed, commands, motors;
-
-    speed = 0;
     commands = null;
     motors = {
       a: new five.Motor([3, 12]),
       b: new five.Motor([11, 13])
     };
-
-    motors.b.fwd(speed);
+speed=255;
     motors.a.fwd(speed);
-    console.log(speed);
+    motors.b.fwd(speed);
+
+
 
     io.on('connection', function (socket) {
       socket.on('stop car',function(a){
         console.log(a);
         speed=255;
         motors.a.fwd(speed);
-        motors.b.rev(speed);
+        motors.b.fwd(speed);
       });
 
-      socket.on('start car',function (a) {
+      socket.on('forward car',function (a) {
         console.log(a);
-        speed=0;
+        speed=100;
         motors.a.fwd(speed);
         motors.b.fwd(speed);
+      });
+
+      socket.on('reverse', function (a) {
+        speed=170;
+        motors.a.rev(speed);
+        motors.b.rev(speed);
       })
     });
 

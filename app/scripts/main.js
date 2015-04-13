@@ -15,8 +15,27 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
   };
 
   $scope.startCar= function () {
-    mySocket.emit('start car','start');
+    mySocket.emit('forward car','start');
   };
+
+  $scope.reverse= function () {
+    mySocket.emit('reverse','reverse');
+  };
+
+  angular.element('body').keydown(function (e) {
+    if(e.which===38){
+      $scope.startCar();
+      e.preventDefault();
+    }
+    else if(e.which===40){
+      $scope.reverse();
+      e.preventDefault();
+    }
+    else if(e.which===32){
+      $scope.stopCar();
+      e.preventDefault();
+    }
+  });
 
   mySocket.on('started', function (d) {
     console.log(d);
@@ -285,135 +304,6 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
     }
   });
 
-  function speedC(s) {
-    $scope.speedConfig = {
-      "options": {
-        chart      : {
-          type               : 'gauge',
-          plotBackgroundColor: null,
-          plotBackgroundImage: null,
-          plotBorderWidth    : 0,
-          plotShadow         : false,
-          backgroundColor    : null
-        },
-        "exporting": {
-          enabled: false
-        },
-        title      : {
-          text: 'Angular Velocity (RPM)'
-        },
-
-        pane : {
-          startAngle: -150,
-          endAngle  : 150,
-          background: [{
-            backgroundColor: {
-              linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
-              stops         : [
-                [0, '#FFF'],
-                [1, '#333']
-              ]
-            },
-            borderWidth    : 0,
-            outerRadius    : '109%'
-          }, {
-            backgroundColor: {
-              linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
-              stops         : [
-                [0, '#333'],
-                [1, '#FFF']
-              ]
-            },
-            borderWidth    : 1,
-            outerRadius    : '107%'
-          }, {
-            // default background
-          }, {
-            backgroundColor: '#DDD',
-            borderWidth    : 0,
-            outerRadius    : '105%',
-            innerRadius    : '103%'
-          }]
-        },
-        yAxis: {
-          min: 0,
-          max: 500,
-
-          minorTickInterval: 'auto',
-          minorTickWidth   : 1,
-          minorTickLength  : 10,
-          minorTickPosition: 'inside',
-          minorTickColor   : '#666',
-
-          tickPixelInterval: 30,
-          tickWidth        : 2,
-          tickPosition     : 'inside',
-          tickLength       : 10,
-          tickColor        : '#666',
-          labels           : {
-            step    : 2,
-            rotation: 'auto',
-            style   : {
-              color: '#000'
-            }
-          },
-          title            : {
-            text : 'Angular Velocity (rpm)',
-            style: {
-              color: '#000'
-            }
-          },
-          subtitle         : {
-            style: {
-              color: '#000'
-            }
-          },
-          plotOptions      : {
-            series: {
-              dataLabels: {
-                color: '#000'
-              }
-            }
-          },
-          plotBands        : [{
-            from : 0,
-            to   : 260,
-            color: '#55BF3B' // green
-          }, {
-            from : 260,
-            to   : 380,
-            color: '#DDDF0D' // yellow
-          }, {
-            from : 380,
-            to   : 500,
-            color: '#DF5353' // red
-          }]
-        }
-
-      },
-      "series" : [{
-        "name"   : 'Speed',
-        "data"   : [s],
-        "tooltip": {
-          valueSuffix: ' rpm'
-
-        }
-      }]
-    }
-  }
-
-  speedC(0);
-
-  var oldSpeed = 0;
-  mySocket.on('prox', function (d) {
-    if (d.speed != oldSpeed) {
-      //speedC(d.speed);
-      $scope.speedConfig.series[0].data = [d.speed];
-      oldSpeed = d.speed;
-    }
-    $scope.speed = d.speed;
-
-  })
 }]);
 
 app.directive(
@@ -466,6 +356,7 @@ app.directive(
           // Renderer
           renderer = new THREE.WebGLRenderer();
           renderer.setSize(window.innerWidth, window.innerHeight);
+          //renderer.setClearColor( 0xffffff, 1 );
           elem[0].appendChild(renderer.domElement);
 
           //Events
