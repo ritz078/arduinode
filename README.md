@@ -3,6 +3,8 @@ Arduinode
 
 Data Acquisition System for a Hybrid/Electric Car.
 
+![screen](arduinode.jpg)
+
 Technologies Used
 -----------------
 * AngularJS
