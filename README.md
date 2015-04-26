@@ -3,7 +3,7 @@ Arduinode
 
 Data Acquisition System for a Hybrid/Electric Car.
 
-![screen](arduinode.jpg)
+![screen](arduinode.png)
 
 Technologies Used
 -----------------
