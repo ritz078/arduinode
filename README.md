@@ -26,7 +26,7 @@ Features
 
 Setup the app and arduino
 -------------------------
-* Download Arduino IDE
+* Download [Arduino IDE](http://www.arduino.cc/en/main/software)
 * Plug in your Arduino or Arduino compatible microcontroller via USB
 * Open the Arduino IDE, select: File > Examples > Firmata > StandardFirmata
 * Click the "Upload" button.

@@ -11,7 +11,7 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
 
   $scope.stopCar = function () {
     mySocket.emit('stop car','stopCar');
-    console.log('gfggf');
+    console.log('stop');
   };
 
   $scope.startCar= function () {
@@ -35,10 +35,6 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
       $scope.stopCar();
       e.preventDefault();
     }
-  });
-
-  mySocket.on('started', function (d) {
-    console.log(d);
   });
 
   $scope.assimpModelUrl = "/model/model.json";
@@ -76,6 +72,7 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
   accData.z.initializeArray(50);
 
   mySocket.on('temp', function (d) {
+    console.log(d);
     $scope.imu = d;
     var gyro = d.gyro;
     var acc = d.accelerometer;
@@ -356,7 +353,7 @@ app.directive(
           // Renderer
           renderer = new THREE.WebGLRenderer();
           renderer.setSize(window.innerWidth, window.innerHeight);
-          //renderer.setClearColor( 0xffffff, 1 );
+          renderer.setClearColor( 0x555555, 1 );
           elem[0].appendChild(renderer.domElement);
 
           //Events

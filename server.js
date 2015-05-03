@@ -18,7 +18,7 @@ var controller = process.argv[2] || 'GP2Y0A02YK0F';
 var board = new five.Board({
   repl:false
 });
-
+io.on('connection', function (socket) {
 
   board.on('ready', function () {
 
@@ -29,20 +29,15 @@ var board = new five.Board({
     var i=0;
     imu.on('change', function () {
     i++;
-      if(i%30===0){
+      if(i%50===0){
         var date=new Date();
         var imuData={
-          'time':date,
           'temperature':parseFloat(this.temperature.celsius.toFixed(2)),
           'accelerometer':{
             'x':this.accelerometer.x,
             'y':this.accelerometer.y,
             'z':this.accelerometer.z,
-            'pitch':this.accelerometer.pitch,
-            'roll':this.accelerometer.roll,
-            'acceleration':this.accelerometer.acceleration,
-            'inclination':this.accelerometer.inclination,
-            'orientation':this.accelerometer.orientation
+            'acceleration':this.accelerometer.acceleration
           },
           'gyro':{
             'x':this.gyro.x,
@@ -50,15 +45,12 @@ var board = new five.Board({
             'z':this.gyro.z,
             'pitch':this.gyro.pitch,
             'roll':this.gyro.roll,
-            'yaw':this.gyro.yaw,
-            'rate':this.gyro.rate
+            'yaw':this.gyro.yaw
           }
         };
-        io.emit('temp', imuData);
+        socket.emit('temp', imuData);
       }
     });
-
-    io.emit('started','started');
 
 
     var speed, commands, motors;
@@ -73,7 +65,7 @@ speed=255;
 
 
 
-    io.on('connection', function (socket) {
+
       socket.on('stop car',function(a){
         console.log(a);
         speed=255;
@@ -83,20 +75,17 @@ speed=255;
 
       socket.on('forward car',function (a) {
         console.log(a);
-        speed=100;
+        speed=150;
         motors.a.fwd(speed);
         motors.b.fwd(speed);
       });
 
       socket.on('reverse', function (a) {
-        speed=170;
+        speed=120;
         motors.a.rev(speed);
         motors.b.rev(speed);
       })
     });
-
-
-
   });
 
 
