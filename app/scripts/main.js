@@ -22,6 +22,14 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
     mySocket.emit('reverse','reverse');
   };
 
+  $scope.rightCar= function () {
+    mySocket.emit('right car','right');
+  };
+
+  $scope.leftCar= function () {
+    mySocket.emit('left car','left');
+  };
+
   angular.element('body').keydown(function (e) {
     if(e.which===38){
       $scope.startCar();
@@ -33,6 +41,14 @@ app.controller('ArduinodeCtrl', ['$scope', 'mySocket', function ($scope, mySocke
     }
     else if(e.which===32){
       $scope.stopCar();
+      e.preventDefault();
+    }
+    else if(e.which===39){
+      $scope.rightCar();
+      e.preventDefault();
+    }
+    else if(e.which===37){
+      $scope.leftCar();
       e.preventDefault();
     }
   });
@@ -353,7 +369,7 @@ app.directive(
           // Renderer
           renderer = new THREE.WebGLRenderer();
           renderer.setSize(window.innerWidth, window.innerHeight);
-          renderer.setClearColor( 0x555555, 1 );
+          renderer.setClearColor( 0xDDDDDD, 1 );
           elem[0].appendChild(renderer.domElement);
 
           //Events
