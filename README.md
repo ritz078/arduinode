@@ -31,7 +31,7 @@ Setup the app and arduino
 * Open the Arduino IDE, select: File > Examples > Firmata > StandardFirmata
 * Click the "Upload" button.
 * Do the MPU-6050 sensor connections with the arduino uno r3 as shown in the diagram below
-  ![img](docs-media/mpu.png)
+  ![img](docs-media/circuit.png)
 * Connect the arduino to the laptop.
 * Run ```npm install && bower install``` the first time you run the app.
 * Run ```node server.js```
